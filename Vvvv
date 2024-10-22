@@ -1,1 +1,43 @@
-vansg
+interface Employee{
+  ID : number,
+  FirstName : string,
+  LastName : string,
+  Address : string,
+  Salary : number
+}
+
+class Employees implements Employee{
+  ID : number
+  FirstName: string
+  LastName: string
+  Address: string
+  Salary: number
+  constructor(Id : number,firstname : string, lastname : string,address : string,salary : number){
+    this.ID = Id;
+    this.FirstName = firstname;
+    this.LastName = lastname;
+    this.Address = address;
+    this.Salary = salary;
+  }
+}
+
+  const employeedetails : Employees[] = [
+    new Employees(1,"Vansh","Shah","301VapiGujarat",5000),
+    new Employees(2,"John","Smith","America",10000),
+    new Employees(3,"Steven","Smiths","Australia",15000),
+    new Employees(4,"Joe","Root","England",20000),
+    new Employees(5,"Kane","Williamson","New Zealand",25000),
+  ];
+
+  const emp : Employees[] = [
+    new Employees(6,"Kieron","Pollard","West Indies",30000),
+    new Employees(7,"David","Miller","South Africa",35000),
+    new Employees(8,"Virat","Kohli","India",40000)
+  ]
+
+  const joinarray : Employee[] = employeedetails.concat(emp);
+  console.log(joinarray);
+
+  joinarray.forEach((emp)=>{
+    console.log(`Full Name is ${emp.FirstName} ${emp.LastName}`);
+  })
