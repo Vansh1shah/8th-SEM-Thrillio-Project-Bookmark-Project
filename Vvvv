@@ -1,18 +1,18 @@
-interface Employee{
-  ID : number,
-  FirstName : string,
-  LastName : string,
-  Address : string,
-  Salary : number
+interface Employee {
+  ID: number;
+  FirstName: string;
+  LastName: string;
+  Address: string;
+  Salary: number;
 }
 
-class Employees implements Employee{
-  ID : number
-  FirstName: string
-  LastName: string
-  Address: string
-  Salary: number
-  constructor(Id : number,firstname : string, lastname : string,address : string,salary : number){
+class Employees implements Employee {
+  ID: number;
+  FirstName: string;
+  LastName: string;
+  Address: string;
+  Salary: number;
+  constructor(Id: number, firstname: string, lastname: string, address: string, salary: number) {
     this.ID = Id;
     this.FirstName = firstname;
     this.LastName = lastname;
@@ -21,23 +21,52 @@ class Employees implements Employee{
   }
 }
 
-  const employeedetails : Employees[] = [
-    new Employees(1,"Vansh","Shah","301VapiGujarat",5000),
-    new Employees(2,"John","Smith","America",10000),
-    new Employees(3,"Steven","Smiths","Australia",15000),
-    new Employees(4,"Joe","Root","England",20000),
-    new Employees(5,"Kane","Williamson","New Zealand",25000),
-  ];
+// Initial arrays
+const employeedetails: Employees[] = [
+  new Employees(1, "Vansh", "Shah", "301 Vapi Gujarat", 5000),
+  new Employees(2, "John", "Smith", "102 America", 10000),
+  new Employees(3, "Steven", "Smiths", "203 Sydney Australia", 15000),
+  new Employees(4, "Joe", "Root", "404 London England", 20000),
+  new Employees(5, "Kane", "Williamson", "505 Wellington New Zealand", 25000),
+];
 
-  const emp : Employees[] = [
-    new Employees(6,"Kieron","Pollard","West Indies",30000),
-    new Employees(7,"David","Miller","South Africa",35000),
-    new Employees(8,"Virat","Kohli","India",40000)
-  ]
+const emp: Employees[] = [
+  new Employees(6, "Kieron", "Pollard", "301 Kingston West Indies", 30000),
+  new Employees(7, "David", "Miller", "702 Cape Town South Africa", 35000),
+  new Employees(8, "Virat", "Kohli", "103 Mumbai India", 40000),
+];
 
-  const joinarray : Employee[] = employeedetails.concat(emp);
-  console.log(joinarray);
+// Join both arrays
+const joinarray: Employee[] = employeedetails.concat(emp);
 
-  joinarray.forEach((emp)=>{
-    console.log(`Full Name is ${emp.FirstName} ${emp.LastName}`);
-  })
+// Helper function to split address into FlatNumber, City, and State
+function splitAddress(address: string): { flatNumber: string; city: string; state: string } {
+  const parts = address.split(" ");
+  const flatNumber = parts[0];
+  const city = parts[1];
+  const state = parts.slice(2).join(" "); // Join remaining parts as state
+  return { flatNumber, city, state };
+}
+
+// Calculate PF (12% of salary)
+function calculatePF(salary: number): number {
+  return salary * 0.12;
+}
+
+// Display employee details with FullName, Address split, PF, and total salary
+joinarray.forEach((emp) => {
+  const fullName = `${emp.FirstName} ${emp.LastName}`;
+  const { flatNumber, city, state } = splitAddress(emp.Address);
+  const pf = calculatePF(emp.Salary);
+  const totalSalary = emp.Salary - pf;
+
+  console.log(`ID: ${emp.ID}`);
+  console.log(`Full Name: ${fullName}`);
+  console.log(`Flat Number: ${flatNumber}`);
+  console.log(`City: ${city}`);
+  console.log(`State: ${state}`);
+  console.log(`Salary: ${emp.Salary}`);
+  console.log(`PF (12%): ${pf}`);
+  console.log(`Total Salary after PF: ${totalSalary}`);
+  console.log('-----------------------------------');
+});
