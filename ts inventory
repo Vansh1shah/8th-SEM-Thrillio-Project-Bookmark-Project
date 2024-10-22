@@ -1,0 +1,84 @@
+// main.ts
+
+// Interface for the product
+interface Product {
+    id: number;
+    name: string;
+    quantity: number;
+    price: number;
+
+    purchase(quantity: number): void;
+    checkReorder(): void;
+}
+
+// Class representing a product
+class RetailProduct implements Product {
+    id: number;
+    name: string;
+    quantity: number;
+    price: number;
+    private reorderThreshold: number = 5; // Threshold for reorder
+
+    constructor(id: number, name: string, quantity: number, price: number) {
+        this.id = id;
+        this.name = name;
+        this.quantity = quantity;
+        this.price = price;
+    }
+
+    // Handle purchase of a product
+    purchase(quantity: number): void {
+        if (this.quantity >= quantity) {
+            this.quantity -= quantity;
+            console.log(`Purchased ${quantity} of ${this.name}. Remaining stock: ${this.quantity}`);
+        } else {
+            console.log(`Not enough stock for ${this.name}. Available quantity: ${this.quantity}`);
+        }
+
+        // Check if reorder is required
+        this.checkReorder();
+    }
+
+    // Check if reorder is needed and raise request
+    checkReorder(): void {
+        if (this.quantity < this.reorderThreshold) {
+            console.log(`Reorder needed for ${this.name}. Current stock: ${this.quantity}`);
+        }
+    }
+}
+
+// Inventory class to manage multiple products
+class Inventory {
+    private products: RetailProduct[] = [];
+
+    // Add product to inventory
+    addProduct(product: RetailProduct): void {
+        this.products.push(product);
+        console.log(`${product.name} added to inventory.`);
+    }
+
+    // Purchase a product from inventory by product ID
+    purchaseProduct(productId: number, quantity: number): void {
+        const product = this.products.find(p => p.id === productId);
+        if (product) {
+            product.purchase(quantity);
+        } else {
+            console.log(`Product with ID ${productId} not found in inventory.`);
+        }
+    }
+}
+
+// Example usage
+const inventory = new Inventory();
+
+// Adding products to the inventory
+const product1 = new RetailProduct(1, "Laptop", 10, 50000);
+const product2 = new RetailProduct(2, "Mouse", 20, 500);
+
+inventory.addProduct(product1);
+inventory.addProduct(product2);
+
+// Making purchases
+inventory.purchaseProduct(1, 7); // Purchasing 7 laptops
+inventory.purchaseProduct(2, 17); // Purchasing 17 mice
+inventory.purchaseProduct(1, 3);  // Purchasing 3 laptops (triggers reorder)
