@@ -1,84 +1,66 @@
-// main.ts
-
-// Interface for the product
 interface Product {
-    id: number;
-    name: string;
-    quantity: number;
-    price: number;
-
-    purchase(quantity: number): void;
-    checkReorder(): void;
+  id: number;
+  name: string;
+  price: number;
+  quantity: number;
 }
 
-// Class representing a product
-class RetailProduct implements Product {
-    id: number;
-    name: string;
-    quantity: number;
-    price: number;
-    private reorderThreshold: number = 5; // Threshold for reorder
+class RetailShop implements Product {
+  id: number;
+  name: string;
+  price: number;
+  quantity: number;
+  reorder: number = 5;
 
-    constructor(id: number, name: string, quantity: number, price: number) {
-        this.id = id;
-        this.name = name;
-        this.quantity = quantity;
-        this.price = price;
+  constructor(id: number, name: string, price: number, quantity: number) {
+    this.id = id;
+    this.name = name;
+    this.price = price;
+    this.quantity = quantity;
+  }
+
+  purchase(quantity: number): void {
+    if (this.quantity >= quantity) {
+      this.quantity = this.quantity - quantity;
+      console.log(`Purchased ${quantity} ${this.name}. Remaining stock ${this.quantity}`);
+    } else {
+      console.log(`Not Enough Stock ${this.name}.Available quantity ${this.quantity}`);
     }
+    this.checkReOrder();
+  }
 
-    // Handle purchase of a product
-    purchase(quantity: number): void {
-        if (this.quantity >= quantity) {
-            this.quantity -= quantity;
-            console.log(`Purchased ${quantity} of ${this.name}. Remaining stock: ${this.quantity}`);
-        } else {
-            console.log(`Not enough stock for ${this.name}. Available quantity: ${this.quantity}`);
-        }
-
-        // Check if reorder is required
-        this.checkReorder();
+  checkReOrder(): void {
+    if (this.quantity < this.reorder) {
+      console.log(`Reorder needed for ${this.name}.Current stock is ${this.quantity}`);
     }
-
-    // Check if reorder is needed and raise request
-    checkReorder(): void {
-        if (this.quantity < this.reorderThreshold) {
-            console.log(`Reorder needed for ${this.name}. Current stock: ${this.quantity}`);
-        }
-    }
+  }
 }
 
-// Inventory class to manage multiple products
 class Inventory {
-    private products: RetailProduct[] = [];
+  private products: RetailShop[] = [];
 
-    // Add product to inventory
-    addProduct(product: RetailProduct): void {
-        this.products.push(product);
-        console.log(`${product.name} added to inventory.`);
-    }
+  addProduct(product: RetailShop): void {
+    this.products.push(product);
+    console.log(`${product.name} added to the Inventory.`)
+  }
 
-    // Purchase a product from inventory by product ID
-    purchaseProduct(productId: number, quantity: number): void {
-        const product = this.products.find(p => p.id === productId);
-        if (product) {
-            product.purchase(quantity);
-        } else {
-            console.log(`Product with ID ${productId} not found in inventory.`);
-        }
+  purchaseProduct(productId: number, quantity: number): void {
+    const product = this.products.find((p) => p.id === productId);
+    if (product) {
+      product.purchase(quantity);
+    } else {
+      console.log(`Product with ID ${productId} is not found in the Inventory`);
     }
+  }
 }
 
-// Example usage
 const inventory = new Inventory();
 
-// Adding products to the inventory
-const product1 = new RetailProduct(1, "Laptop", 10, 50000);
-const product2 = new RetailProduct(2, "Mouse", 20, 500);
+const product1 = new RetailShop(1, "Laptop", 1000, 20);
+const product2 = new RetailShop(2, "Mouse", 2000, 10);
 
 inventory.addProduct(product1);
 inventory.addProduct(product2);
 
-// Making purchases
-inventory.purchaseProduct(1, 7); // Purchasing 7 laptops
-inventory.purchaseProduct(2, 17); // Purchasing 17 mice
-inventory.purchaseProduct(1, 3);  // Purchasing 3 laptops (triggers reorder)
+inventory.purchaseProduct(1, 2);
+inventory.purchaseProduct(2, 4);
