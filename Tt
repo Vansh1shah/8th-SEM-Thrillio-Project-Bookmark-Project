@@ -1,0 +1,216 @@
+1
+
+// repository.ts
+export class Repository<T> {
+    private items: T[] = [];
+
+    add(item: T): void {
+        this.items.push(item);
+    }
+
+    getAll(): T[] {
+        return this.items;
+    }
+
+    findById(id: number): T | null {
+        if (id >= 0 && id < this.items.length) {
+            return this.items[id];
+        }
+        return null;
+    }
+}
+
+
+// app.ts
+import { Repository } from './repository';
+
+// Repository of strings
+const stringRepo = new Repository<string>();
+stringRepo.add('TypeScript');
+stringRepo.add('JavaScript');
+stringRepo.add('Python');
+
+console.log('String Repository:', stringRepo.getAll());
+console.log('Find by index 1:', stringRepo.findById(1));
+console.log('Find by index 5:', stringRepo.findById(5));  // Out of bounds, should return null
+
+// Repository of objects
+interface User {
+    id: number;
+    name: string;
+}
+
+const userRepo = new Repository<User>();
+userRepo.add({ id: 1, name: 'Alice' });
+userRepo.add({ id: 2, name: 'Bob' });
+
+console.log('User Repository:', userRepo.getAll());
+console.log('Find user by index 0:', userRepo.findById(0));
+console.log('Find user by index 3:', userRepo.findById(3));  // Out of bounds, should return null
+
+
+2
+// stack.ts
+export class Stack<T> {
+    private items: T[] = [];
+
+    // Adds an item to the stack
+    push(item: T): void {
+        this.items.push(item);
+    }
+
+    // Removes and returns the last item from the stack
+    pop(): T | null {
+        if (this.isEmpty()) {
+            return null;
+        }
+        return this.items.pop() as T;
+    }
+
+    // Returns the last item without removing it
+    peek(): T | null {
+        if (this.isEmpty()) {
+            return null;
+        }
+        return this.items[this.items.length - 1];
+    }
+
+    // Checks if the stack is empty
+    isEmpty(): boolean {
+        return this.items.length === 0;
+    }
+}
+
+// main.ts
+import { Stack } from './stack';
+
+// Stack of numbers
+const numberStack = new Stack<number>();
+numberStack.push(10);
+numberStack.push(20);
+numberStack.push(30);
+
+console.log('Number Stack after pushes:', numberStack);
+console.log('Peek at number stack:', numberStack.peek());  // Should return 30
+console.log('Pop from number stack:', numberStack.pop());  // Should return 30
+console.log('Number Stack after pop:', numberStack);
+console.log('Is number stack empty?', numberStack.isEmpty());  // Should return false
+
+// Stack of strings
+const stringStack = new Stack<string>();
+stringStack.push('TypeScript');
+stringStack.push('JavaScript');
+stringStack.push('Python');
+
+console.log('String Stack after pushes:', stringStack);
+console.log('Peek at string stack:', stringStack.peek());  // Should return 'Python'
+console.log('Pop from string stack:', stringStack.pop());  // Should return 'Python'
+console.log('String Stack after pop:', stringStack);
+console.log('Is string stack empty?', stringStack.isEmpty());  // Should return false
+
+
+
+3
+
+// sort-utils.ts
+export function sortArray<T>(arr: T[], compareFn: (a: T, b: T) => number): T[] {
+    // Use the spread operator to create a copy of the array so the original array is not mutated
+    const newArr = [...arr];
+    // Sort the array based on the comparison function provided
+    return newArr.sort(compareFn);
+}
+
+// app.ts
+import { sortArray } from './sort-utils';
+
+// Sorting an array of numbers in ascending order
+const numberArray = [5, 2, 9, 1, 5, 6];
+const sortedNumbers = sortArray(numberArray, (a, b) => a - b);
+console.log('Original number array:', numberArray);
+console.log('Sorted number array (ascending):', sortedNumbers);
+
+// Sorting an array of strings in descending alphabetical order
+const stringArray = ['Banana', 'Apple', 'Cherry', 'Date'];
+const sortedStrings = sortArray(stringArray, (a, b) => b.localeCompare(a));
+console.log('Original string array:', stringArray);
+console.log('Sorted string array (descending):', sortedStrings);
+
+// Sorting an array of objects by the id property in ascending order
+interface User {
+    id: number;
+    name: string;
+}
+
+const users: User[] = [
+    { id: 3, name: 'Alice' },
+    { id: 1, name: 'Bob' },
+    { id: 2, name: 'Charlie' }
+];
+
+const sortedUsersById = sortArray(users, (a, b) => a.id - b.id);
+console.log('Original users array:', users);
+console.log('Sorted users array (by id ascending):', sortedUsersById);
+
+
+4
+
+// array-utils.ts
+
+// Function to merge two arrays of the same type
+export function mergeArrays<T>(arr1: T[], arr2: T[]): T[] {
+    return [...arr1, ...arr2];
+}
+
+// Function to find the index of the first item that satisfies the predicate function
+export function findIndex<T>(arr: T[], predicate: (item: T) => boolean): number {
+    for (let i = 0; i < arr.length; i++) {
+        if (predicate(arr[i])) {
+            return i;
+        }
+    }
+    return -1;  // Return -1 if no item is found
+}
+
+// Function to remove duplicate values from an array
+export function removeDuplicates<T>(arr: T[]): T[] {
+    return Array.from(new Set(arr));  // Using Set to automatically filter out duplicates
+}
+
+// app.ts
+import { mergeArrays, findIndex, removeDuplicates } from './array-utils';
+
+// Merging arrays of numbers and strings
+const numbers1 = [1, 2, 3];
+const numbers2 = [4, 5, 6];
+const mergedNumbers = mergeArrays(numbers1, numbers2);
+console.log('Merged Numbers:', mergedNumbers);
+
+const strings1 = ['Apple', 'Banana'];
+const strings2 = ['Cherry', 'Date'];
+const mergedStrings = mergeArrays(strings1, strings2);
+console.log('Merged Strings:', mergedStrings);
+
+// Finding the index of an element in an array of objects
+interface Product {
+    id: number;
+    name: string;
+}
+
+const products: Product[] = [
+    { id: 1, name: 'Laptop' },
+    { id: 2, name: 'Phone' },
+    { id: 3, name: 'Tablet' }
+];
+
+const productIndex = findIndex(products, product => product.name === 'Phone');
+console.log('Index of product "Phone":', productIndex);
+
+// Removing duplicates from an array of primitive values
+const duplicateNumbers = [1, 2, 2, 3, 4, 4, 5];
+const uniqueNumbers = removeDuplicates(duplicateNumbers);
+console.log('Unique Numbers:', uniqueNumbers);
+
+const duplicateStrings = ['Apple', 'Banana', 'Apple', 'Cherry', 'Cherry'];
+const uniqueStrings = removeDuplicates(duplicateStrings);
+console.log('Unique Strings:', uniqueStrings);
+
